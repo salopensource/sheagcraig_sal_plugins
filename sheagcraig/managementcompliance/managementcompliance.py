@@ -30,17 +30,21 @@ class ManagementCompliance(IPlugin):
         # bu_dashboard, or group_dashboard, you will be passed a business_unit
         # or machine_group id to use (mainly for linking to the right search).
         if page == 'front':
-            t = loader.get_template('sheagcraig/managementcompliance/templates/front.html')
+            t = loader.get_template(
+                'sheagcraig/managementcompliance/templates/front.html')
+        elif page in ('bu_dashboard', 'group_dashboard'):
+            t = loader.get_template(
+                'sheagcraig/managementcompliance/templates/id.html')
 
-        if page == 'bu_dashboard':
-            t = loader.get_template('sheagcraig/managementcompliance/templates/id.html')
+        in_compliance = machines.filter(
+            pluginscriptsubmission__plugin='ManagementCompliance',
+            pluginscriptsubmission__pluginscriptrow__pluginscript_name='MunkiProfilePresent',
+            pluginscriptsubmission__pluginscriptrow__pluginscript_data=True).count()
+        out_of_compliance = machines.filter(
+            pluginscriptsubmission__plugin='ManagementCompliance',
+            pluginscriptsubmission__pluginscriptrow__pluginscript_name='MunkiProfilePresent',
+            pluginscriptsubmission__pluginscriptrow__pluginscript_data=False).count()
 
-        if page == 'group_dashboard':
-            t = loader.get_template('sheagcraig/managementcompliance/templates/id.html')
-
-        compliance_results = [result["data"]["MunkiProfilePresent"] for machine in machines for result in plistlib.readPlistFromString(machine.report.encode("utf-8")).get("Plugin_Results", []) if result.get("plugin") == "ManagementCompliance"]
-        in_compliance = compliance_results.count(True)
-        out_of_compliance = compliance_results.count(False)
         unknown = machines.count() - (in_compliance + out_of_compliance)
 
         data = [{"label": "In Compliance", "value": in_compliance},
@@ -62,16 +66,23 @@ class ManagementCompliance(IPlugin):
 
     def filter_machines(self, machines, data):
         if data == 'In Compliance':
-            machines = machines
-            title = 'Machines with less than 80% disk utilization'
+            machines = machines.filter(
+                pluginscriptsubmission__plugin='ManagementCompliance',
+                pluginscriptsubmission__pluginscriptrow__pluginscript_name='MunkiProfilePresent',
+                pluginscriptsubmission__pluginscriptrow__pluginscript_data=True)
+            title = 'Machines in compliance'
 
         elif data == 'Out of Compliance':
-            machines = machines
-            title = 'Machines with 80%-90% disk utilization'
+            machines = machines.filter(
+                pluginscriptsubmission__plugin='ManagementCompliance',
+                pluginscriptsubmission__pluginscriptrow__pluginscript_name='MunkiProfilePresent',
+                pluginscriptsubmission__pluginscriptrow__pluginscript_data=False)
+            title = 'Machines out of compliance'
 
         elif data == 'Unknown Status':
-            machines = machines
-            title = 'Machines with more than 90% disk utilization'
+            machines = machines.exclude(
+                pluginscriptsubmission__plugin='ManagementCompliance')
+            title = 'Machines which have not reported their compliance'
 
         else:
             machines = None
