@@ -1,0 +1,8 @@
+[Core]
+Name = PhaseTesters
+Module = phase_testers
+
+[Documentation]
+Author = Shea Craig
+Version = 1.0
+Website = http://www.sheacraig.com
