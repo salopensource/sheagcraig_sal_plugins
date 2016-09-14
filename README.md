@@ -73,6 +73,9 @@ As this plugin relies on a script to be run client-side, machines that have not
 checked in with results yet will show up as `Unknown`.
 
 ### ManagementCompliance (_unfinished_!)
+
+![Management Compliance](images/compliance.png)
+
 This plugin is a work in progress to eventually be able to track parameterized
 aspects of machine configurations to provide an easy plugin / machine filter
 for finding machines that are out of compliance with management policies.
@@ -81,6 +84,9 @@ At this time, this plugin only checks for a Munki profile with the identifier:
 sas.profiles.munki. This is of course not useful to others without editing.
 
 ### Machine Model Bar
+
+![Machine Model Bar](images/models.png)
+
 This plugin has been contributed to the main Sal project as an alternate to the
 Machine Model plugin. It is a bar graph showing more detailed model information
 and counts.
