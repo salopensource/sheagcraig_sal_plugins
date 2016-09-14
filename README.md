@@ -3,6 +3,36 @@ This repository collects the plugins for the Sal management tool that I have
 written that are not specific to my employer or environment, nor are part of
 the Sal project itself.
 
+## Installation
+
+Clone or copy this project into your Sal plugin directory. The folder must be
+named `sheagcraig`, so if git cloning, do `git clone
+https://github.com/sheagcraig/sheagcraig_sal_plugins sheagcraig`.  The
+advantage of cloning the repo is that you can easily "upgrade" by doing a `git
+pull`. If you are concerned about managing those changes, please feel free to
+fork the repo.
+
+If you're using the
+preferred method of hosting Sal in a Docker container, then bind mounting the
+sheagcraig folder or indeed an entire folder of plugins makes sense.
+
+For example,
+
+``` bash
+docker run -d --name="sal" \
+    --link postgres-sal:db \
+	# ...
+    --restart=always \
+	# Bind mount example:
+    -v /usr/local/docker/sal_data/plugins:/home/docker/sal/plugins \
+    macadmins/sal:2.7.3
+```
+
+Otherwise, copying the `sheagcraig` folder into Sal's plugin folder will work
+as well.
+
+The plugins should now be visible from Sal's plugin configuration page.
+
 ## Included Plugins
 At this time the following plugins are included:
 
