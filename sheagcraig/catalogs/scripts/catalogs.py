@@ -17,7 +17,7 @@ def main():
         client_manifest = {}
 
     formatted_results = {
-        "plugin": "PhaseTesters",
+        "plugin": "Catalogs",
         "historical": False,
         "data": {"Catalogs": "+".join(client_manifest.get("catalogs", []))}}
 

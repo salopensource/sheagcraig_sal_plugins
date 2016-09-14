@@ -1,6 +1,6 @@
 [Core]
-Name = PhaseTesters
-Module = phase_testers
+Name = Catalogs
+Module = catalogs
 
 [Documentation]
 Author = Shea Craig

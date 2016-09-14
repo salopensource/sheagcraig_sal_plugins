@@ -15,7 +15,7 @@ import server.utils as utils
 
 
 class Catalogs(IPlugin):
-    name = "PhaseTesters"
+    name = "Catalogs"
 
     def widget_width(self):
         return 4
@@ -24,15 +24,15 @@ class Catalogs(IPlugin):
         return "builtin"
 
     def get_description(self):
-        return "Phase Testers"
+        return "Catalogs"
 
     def widget_content(self, page, machines=None, theid=None):
         if page == "front":
             template = loader.get_template(
-                "sheagcraig/phase_testers/templates/front.html")
+                "sheagcraig/catalogs/templates/front.html")
         elif page in ("bu_dashboard", "group_dashboard"):
             template = loader.get_template(
-                "sheagcraig/phase_testers/templates/id.html")
+                "sheagcraig/catalogs/templates/id.html")
 
         # TODO: Replace with Sal 3.0 access:
         # https://github.com/salopensource/sal/wiki/Scripts-in-Plugins#other-field-types
@@ -63,7 +63,7 @@ class Catalogs(IPlugin):
         data.append({"label": "Unknown", "value": unreported_count})
 
         c = Context({
-            "title": "Phase Testers",
+            "title": "Catalogs",
             "data": data,
             "theid": theid,
             "page": page})
