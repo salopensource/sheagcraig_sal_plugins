@@ -37,6 +37,9 @@ The plugins should now be visible from Sal's plugin configuration page.
 At this time the following plugins are included:
 
 ### Catalogs
+
+![Catalogs](images/catalogs.png)
+
 This plugin provides a donut chart of catalog usage by managed machines.
 Machines with multiple catalogs configured will appear in the results for each
 of those catalogs. In some environments only the highest-priority catalog is of
@@ -48,6 +51,9 @@ As this plugin relies on a script to be run client-side, machines that have not
 checked in with results yet will show up as `Unknown`.
 
 ### Manifests
+
+![Manifests](images/manifests.png)
+
 The Manifests plugin looks at each client's `/Library/Managed
 Installs/manifests/client_manifest.plist` to determine what
 `included_manifests` are configured. Like the Catalogs plugin above, it
