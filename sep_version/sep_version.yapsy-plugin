@@ -1,0 +1,8 @@
+[Core]
+Name = SEPVersion
+Module = sep_version
+
+[Documentation]
+Author = Shea Craig
+Version = 1.0
+Website = https://www.sheagcraig.com
