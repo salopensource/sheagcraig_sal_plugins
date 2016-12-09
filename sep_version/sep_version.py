@@ -39,7 +39,8 @@ class SEPVersion(IPlugin):
                 "sheagcraig/sep_version/templates/id.html")
 
         data = InventoryItem.objects.filter(
-            machine__in=machines, name="Symantec Endpoint Protection").values(
+            machine__in=machines,
+            application__name="Symantec Endpoint Protection").values(
                 "version").annotate(count=Count("version")).order_by("version")
 
         c = Context({
@@ -51,6 +52,8 @@ class SEPVersion(IPlugin):
         return t.render(c)
 
     def filter_machines(self, machines, data):
-        machines = machines.filter(inventoryitem__name="Symantec Endpoint Protection", inventoryitem__version=data)
+        machines = machines.filter(
+            inventoryitem__name="Symantec Endpoint Protection",
+            inventoryitem__version=data)
 
         return machines, "Machines with version {} of Symantec Endpoint Protection".format(data)
