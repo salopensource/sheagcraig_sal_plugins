@@ -78,10 +78,3 @@ class INSINC(IPlugin):
             "page": page})
 
         return template.render(c)
-
-    def filter_machines(self, machines, data):
-        machines = machines.filter(
-            inventoryitem__name="Symantec Endpoint Protection",
-            inventoryitem__version=data)
-
-        return (machines, "")
