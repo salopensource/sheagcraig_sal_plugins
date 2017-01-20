@@ -1,0 +1,45 @@
+<div class="panel panel-default">
+  <div class="panel-body">
+    <dl class="dl-horizontal">
+      <legend><h5 class"text-uppercase">INSINC</h5></legend>
+      <dt>Asset Tag</dt>
+      <dd>{{ data.asset_tag }}</dd>
+      <dt>Serial</dt>
+      <dd>{{ data.serial }}</dd>
+      <dt>Owner</dt>
+      <dd>{{ data.owner }}</dd>
+      <dt>Employee Number</dt>
+      <dd>{{ data.owner_empno }}</dd>
+      <dt>Room</dt>
+      <dd>{{ data.room }}</dd>
+      <dt>Location</dt>
+      <dd>{{ data.location }}</dd>
+      <dt>Status</dt>
+      <dd>{{ data.status }}</dd>
+      <dt>Type</dt>
+      <dd>{{ data.type }}</dd>
+      <dt>Model</dt>
+      <dd>{{ data.model }}</dd>
+      <dt>Stock Number</dt>
+      <dd>{{ data.stock_number }}</dd>
+      <dt>Model Detail</dt>
+      <dd>{{ data.model_detail }}</dd>
+      <dt>Nodename</dt>
+      <dd>{{ data.nodename }}</dd>
+      <dt>Purchase Order</dt>
+      <dd>{{ data.purchase_order }}</dd>
+    </dl>
+{% if errors %}
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">INSINC Errors</h3>
+  </div>
+  <div class="panel-body">
+    {% for error in errors %}
+    <p class="text-danger">{{ error }}</p>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+  </div>
+</div>
