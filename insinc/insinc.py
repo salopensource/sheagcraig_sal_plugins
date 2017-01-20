@@ -1,15 +1,10 @@
 #!/usr/bin/python
 
 
-from django.db.models import Count
-from django.shortcuts import get_object_or_404
 from django.template import loader, Context
 from yapsy.IPlugin import IPlugin
-from yapsy.PluginManager import PluginManager
 
-from inventory.models import InventoryItem
 from server.models import PluginScriptRow, SalSetting
-import server.utils as utils
 
 import pynsinc
 
@@ -53,17 +48,14 @@ class INSINC(IPlugin):
             try:
                 asset_tag = plugin_data.first().pluginscript_data
                 int(asset_tag)
-            except:
+            except (AttributeError, ValueError):
                 asset_tag = ""
 
             if asset_tag:
                 macs = insinc.get_assets(
                     pynsinc.Field.asset_tag, pynsinc.Operator.equals,
                     asset_tag)
-                try:
-                    mac = macs[0]
-                except:
-                    mac = None
+                mac = macs[0] if macs else None
         else:
             mac = None
             errors.append(
