@@ -49,7 +49,15 @@ class INSINC(IPlugin):
                 asset_tag = plugin_data.first().pluginscript_data
                 int(asset_tag)
             except (AttributeError, ValueError):
-                asset_tag = ""
+                # I have found some machines that were setup with
+                # ARD Field number 1 == "tag <asset_tag>". There may be
+                # Other cruft in there, so strip it out based on regex.
+                import re
+                match = re.search("\d*$", asset_tag)
+                if match:
+                    asset_tag = match.group()
+                else:
+                    asset_tag = ""
 
             mac = None
             if asset_tag:
