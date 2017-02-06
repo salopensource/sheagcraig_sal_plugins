@@ -51,6 +51,7 @@ class INSINC(IPlugin):
             except (AttributeError, ValueError):
                 asset_tag = ""
 
+            mac = None
             if asset_tag:
                 macs = insinc.get_assets(
                     pynsinc.Field.asset_tag, pynsinc.Operator.equals,
@@ -64,7 +65,7 @@ class INSINC(IPlugin):
 
         if len(macs) > 1:
             errors.append("Multiple INSINC asset records!")
-        if (mac and mac.nodename.upper().split(".")[0] !=
+        if mac and (mac.nodename.upper().split(".")[0] !=
                 machine.hostname.upper()):
             errors.append("INSINC nodename does not match current hostname!")
 
@@ -78,10 +79,3 @@ class INSINC(IPlugin):
             "page": page})
 
         return template.render(c)
-
-    def filter_machines(self, machines, data):
-        machines = machines.filter(
-            inventoryitem__name="Symantec Endpoint Protection",
-            inventoryitem__version=data)
-
-        return (machines, "")
