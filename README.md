@@ -36,6 +36,16 @@ The plugins should now be visible from Sal's plugin configuration page.
 ## Included Plugins
 At this time the following plugins are included:
 
+### Battery
+
+![Battery](images/battery.png)
+
+This is a machine-detail plugin that provides the most relevent details from
+the battery status obtained thanks to @pudquick's gists.
+
+As this plugin relies on a script to be run client-side, machines that have not
+checked in with results yet will show up as `Unknown`.
+
 ### Catalogs
 
 ![Catalogs](images/catalogs.png)
@@ -72,6 +82,14 @@ with an included manifest, with the hierarchy:
 As this plugin relies on a script to be run client-side, machines that have not
 checked in with results yet will show up as `Unknown`.
 
+### Machine Model Bar
+
+![Machine Model Bar](images/models.png)
+
+This plugin has been contributed to the main Sal project as an alternate to the
+Machine Model plugin. It is a bar graph showing more detailed model information
+and counts.
+
 ### ManagementCompliance (_unfinished_!)
 
 ![Management Compliance](images/compliance.png)
@@ -82,14 +100,6 @@ for finding machines that are out of compliance with management policies.
 Obviously, this is not as useful in environments where compliance is enforced!
 At this time, this plugin only checks for a Munki profile with the identifier:
 sas.profiles.munki. This is of course not useful to others without editing.
-
-### Machine Model Bar
-
-![Machine Model Bar](images/models.png)
-
-This plugin has been contributed to the main Sal project as an alternate to the
-Machine Model plugin. It is a bar graph showing more detailed model information
-and counts.
 
 ### Coming Soon
 I'm working on a number of other plugins to meet my needs and to share with Mac

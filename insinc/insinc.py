@@ -45,6 +45,7 @@ class INSINC(IPlugin):
                 submission__machine=machine,
                 submission__plugin='INSINC',
                 pluginscript_name='ARD_Info_1')
+            asset_tag = ""
             try:
                 asset_tag = plugin_data.first().pluginscript_data
                 int(asset_tag)
