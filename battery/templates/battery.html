@@ -1,0 +1,26 @@
+<div class="panel panel-default">
+  <div class="panel-body">
+    <dl class="dl-horizontal">
+			<legend><h5 class"text-uppercase"><span style="font-size: 300%;">&#x1f50b;</span></br>Battery Health</h5></legend>
+			{% if data.machine_type == 'desktop' %}
+			<dt>Desktop</dt>
+			<dd>Not Applicable</dd>
+			{% else %}
+      <dt>Battery Health</dt>
+			<dd>{% if data.BatteryHealth %}{{ data.BatteryHealth }}{% else %}Unknown{% endif %}</dd>
+      <dt>Cycle Count</dt>
+			{% if data.CycleCount and data.DesignCycleCount9C %}
+			<dd>{{ data.CycleCount}} / {{ data.DesignCycleCount9C }} ({{ data.cycle_life|floatformat }}%)</dd>
+			{% else %}
+			<dd></dd>
+			{% endif %}
+      <dt>Capacity</dt>
+			{% if data.MaxCapacity and data.DesignCapacity %}
+			<dd>{{ data.MaxCapacity }} / {{ data.DesignCapacity }} ({{ data.life|floatformat }}%)</dd>
+			{% else %}
+			<dd></dd>
+			{% endif %}
+			{% endif %}
+    </dl>
+  </div>
+</div>
