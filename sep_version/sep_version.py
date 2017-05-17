@@ -28,15 +28,15 @@ class SEPVersion(IPlugin):
         # The data is data is pulled from the database and passed to a template.
 
         # There are three possible views we're going to be rendering to -
-        # front, bu_dashbaord and group_dashboard. If page is set to
+        # front, bu_dashboard and group_dashboard. If page is set to
         # bu_dashboard, or group_dashboard, you will be passed a business_unit
         # or machine_group id to use (mainly for linking to the right search).
         if page == "front":
             t = loader.get_template(
-                "sheagcraig/sep_version/templates/front.html")
+                "sheagcraig_sal_plugins/sep_version/templates/front.html")
         elif page in ("bu_dashboard", "group_dashboard"):
             t = loader.get_template(
-                "sheagcraig/sep_version/templates/id.html")
+                "sheagcraig_sal_plugins/sep_version/templates/id.html")
 
         data = InventoryItem.objects.filter(
             machine__in=machines,
@@ -53,7 +53,7 @@ class SEPVersion(IPlugin):
 
     def filter_machines(self, machines, data):
         machines = machines.filter(
-            inventoryitem__name="Symantec Endpoint Protection",
+            inventoryitem__application__name="Symantec Endpoint Protection",
             inventoryitem__version=data)
 
         return machines, "Machines with version {} of Symantec Endpoint Protection".format(data)
