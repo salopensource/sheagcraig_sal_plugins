@@ -53,7 +53,7 @@ class SEPVersion(IPlugin):
 
     def filter_machines(self, machines, data):
         machines = machines.filter(
-            inventoryitem__name="Symantec Endpoint Protection",
+            inventoryitem__application__name="Symantec Endpoint Protection",
             inventoryitem__version=data)
 
         return machines, "Machines with version {} of Symantec Endpoint Protection".format(data)
