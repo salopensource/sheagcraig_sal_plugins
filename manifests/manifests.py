@@ -3,6 +3,7 @@
 
 from collections import Counter
 import plistlib
+import os
 
 from django.db.models import Count, F
 from django.shortcuts import get_object_or_404
@@ -27,12 +28,13 @@ class Manifests(IPlugin):
         return "Included Manifests"
 
     def widget_content(self, page, machines=None, theid=None):
+        plugin_dir = os.path.dirname(os.path.abspath(__file__))
         if page == "front":
             template = loader.get_template(
-                "sheagcraig/manifests/templates/front.html")
+                os.path.join(plugin_dir, "templates/front.html"))
         elif page in ("bu_dashboard", "group_dashboard"):
             template = loader.get_template(
-                "sheagcraig/manifests/templates/id.html")
+                os.path.join(plugin_dir, "templates/front.html"))
 
         # TODO: Replace with Sal 3.0 access:
         # https://github.com/salopensource/sal/wiki/Scripts-in-Plugins#other-field-types
