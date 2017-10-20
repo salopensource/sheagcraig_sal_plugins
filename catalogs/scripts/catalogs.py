@@ -1,21 +1,35 @@
 #!/usr/bin/python
 
-
 import os
 import plistlib
+from Foundation import CFPreferencesCopyAppValue
 
 
 RESULTS_PATH = "/usr/local/sal/plugin_results.plist"
 
 
 def main():
-    client_manifest_path = (
-        "/Library/Managed Installs/manifests/client_manifest.plist")
-    if os.path.exists(client_manifest_path):
-        client_manifest = plistlib.readPlist(client_manifest_path)
+    managed_install_dir = CFPreferencesCopyAppValue(
+                          'ManagedInstallDir', 'ManagedInstalls')
+    manifest_dir = os.path.join(managed_install_dir, 'manifests')
+
+    # Report file
+    report = os.path.join(managed_install_dir, 'ManagedInstallReport.plist')
+
+    if os.path.exists(report):
+        manifest_name = plistlib.readPlist(report).get('ManifestName', None)
+        client_manifest = os.path.join(manifest_dir, manifest_name)
+    else:
+        # Munki 2 path
+        client_manifest = os.path.join(manifest_dir, 'client_manifest.plist')
+
+    # Read the client manfiest
+    if os.path.exists(os.path.join(manifest_dir, client_manifest)):
+        client_manifest = plistlib.readPlist(client_manifest)
     else:
         client_manifest = {}
 
+    # Get the catalogs for reporting
     formatted_results = {
         "plugin": "Catalogs",
         "historical": False,
