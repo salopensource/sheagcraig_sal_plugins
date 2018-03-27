@@ -4,7 +4,7 @@
 			<legend><h5 class"text-uppercase"><span style="font-size: 300%;">&#x1f50b;</span></br>Battery Health</h5></legend>
 			{% if data.machine_type == 'desktop' %}
 			<dt>Desktop</dt>
-			<dd>Not Applicable</dd>
+			<dd>No battery installed</dd>
 			{% else %}
       <dt>Battery Health</dt>
 			<dd>{% if data.BatteryHealth %}{{ data.BatteryHealth }}{% else %}Unknown{% endif %}</dd>
