@@ -1,26 +1,13 @@
-#!/usr/bin/python
-
-
-from django.template import loader, Context
-from yapsy.IPlugin import IPlugin
-
+import sal.plugin
 from server.models import PluginScriptRow
 
-class Battery(IPlugin):
-    name = "Battery"
 
-    def widget_width(self):
-        return 4
+class Battery(sal.plugin.DetailPlugin):
 
-    def plugin_type(self):
-        return 'machine_detail'
+    description = "Battery Information"
 
-    def get_description(self):
-        return "Battery Information"
-
-    def widget_content(self, page, machine=None, theid=None):
-        template = loader.get_template(
-            "sheagcraig/battery/templates/battery.html")
+    def get_context(self, machine, **kwargs):
+        context = self.super_get_context(machine, **kwargs)
         machine_type = machine.conditions.filter(
             condition_name="machine_type").first().condition_data
         if machine_type == "laptop":
@@ -50,10 +37,5 @@ class Battery(IPlugin):
         else:
             battery = {"machine_type": "desktop"}
 
-        c = Context({
-            "title": self.get_description(),
-            "data": battery,
-            "theid": theid,
-            "page": page})
-
-        return template.render(c)
+        context["data"] = battery
+        return context

@@ -3,32 +3,23 @@
 
 import os
 import plistlib
+import sys
 
-
-RESULTS_PATH = "/usr/local/sal/plugin_results.plist"
+sys.path.append('/usr/local/munki')
+import munkilib.updatecheck.manifestutils
+sys.path.append('/usr/local/sal')
+import utils
 
 
 def main():
-    client_manifest_path = (
-        "/Library/Managed Installs/manifests/client_manifest.plist")
+    client_manifest_path = munkilib.updatecheck.manifestutils.get_primary_manifest()
     if os.path.exists(client_manifest_path):
         client_manifest = plistlib.readPlist(client_manifest_path)
     else:
         client_manifest = {}
 
-    formatted_results = {
-        "plugin": "Catalogs",
-        "historical": False,
-        "data": {"Catalogs": "+".join(client_manifest.get("catalogs", []))}}
-
-    if os.path.exists(RESULTS_PATH):
-        plugin_results = plistlib.readPlist(RESULTS_PATH)
-    else:
-        plugin_results = []
-
-    plugin_results.append(formatted_results)
-
-    plistlib.writePlist(plugin_results, RESULTS_PATH)
+    utils.add_plugin_results(
+        'Catalogs', {"Catalogs": "+".join(client_manifest.get("catalogs", []))})
 
 
 if __name__ == "__main__":

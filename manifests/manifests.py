@@ -1,46 +1,22 @@
-#!/usr/bin/python
-
-
 from collections import Counter
-import plistlib
 
 from django.db.models import Count, F
-from django.shortcuts import get_object_or_404
-from django.template import loader, Context
-from yapsy.IPlugin import IPlugin
-from yapsy.PluginManager import PluginManager
 
-from server.models import *
+import sal.plugin
 import server.utils as utils
 
 
-class Manifests(IPlugin):
-    name = "Manifests"
+class Manifests(sal.plugin.Widget):
 
-    def widget_width(self):
-        return 4
+    description = "Managed Mac Munki manifests"
 
-    def plugin_type(self):
-        return "builtin"
-
-    def get_description(self):
-        return "Included Manifests"
-
-    def widget_content(self, page, machines=None, theid=None):
-        if page == "front":
-            template = loader.get_template(
-                "sheagcraig/manifests/templates/front.html")
-        elif page in ("bu_dashboard", "group_dashboard"):
-            template = loader.get_template(
-                "sheagcraig/manifests/templates/id.html")
-
-        # TODO: Replace with Sal 3.0 access:
-        # https://github.com/salopensource/sal/wiki/Scripts-in-Plugins#other-field-types
-        manifest_plugin_results = machines.filter(
+    def get_context(self, queryset, **kwargs):
+        context = self.super_get_context(queryset, **kwargs)
+        manifest_plugin_results = queryset.filter(
             pluginscriptsubmission__plugin=self.name,
             pluginscriptsubmission__pluginscriptrow__pluginscript_name="included_manifests")
         # Get a count of machines which haven't reported.
-        unreported_count = machines.count() - manifest_plugin_results.count()
+        unreported_count = queryset.count() - manifest_plugin_results.count()
 
         manifest_plugin_results = manifest_plugin_results.annotate(
             pluginscript_data=F(
@@ -62,15 +38,10 @@ class Manifests(IPlugin):
                 counter]
         data.append({"label": "Unknown", "value": unreported_count})
 
-        c = Context({
-            "title": "Manifests",
-            "data": data,
-            "theid": theid,
-            "page": page})
+        context["data"] = data
+        return context
 
-        return template.render(c)
-
-    def filter_machines(self, machines, data):
+    def filter(self, machines, data):
         if data == "Unknown":
             machines = machines.exclude(
                 pluginscriptsubmission__plugin=self.name)

@@ -1,10 +1,8 @@
 #!/usr/bin/python
-
 # Battery code from @pudquick / Michael Lynn
 # https://gist.github.com/pudquick/134acb5f7423312effcc98ec56679136
 
 
-import os
 import sys
 
 import objc
@@ -18,11 +16,8 @@ functions = [("IOServiceGetMatchingService", b"II@"),
             ]
 objc.loadBundleFunctions(IOKit, globals(), functions)
 
-sys.path.append("/usr/local/munki/munkilib")
-import FoundationPlist
-
-
-RESULTS_PATH = "/usr/local/sal/plugin_results.plist"
+sys.path.append("/usr/local/sal")
+import utils
 
 
 def main():
@@ -36,19 +31,7 @@ def main():
         else:
             data["BatteryHealth"] = "Unkonwn"
 
-    formatted_results = {
-        "plugin": "Battery",
-        "historical": False,
-        "data": data}
-
-    if os.path.exists(RESULTS_PATH):
-        plugin_results = FoundationPlist.readPlist(RESULTS_PATH)
-    else:
-        plugin_results = []
-
-    plugin_results.append(formatted_results)
-
-    FoundationPlist.writePlist(plugin_results, RESULTS_PATH)
+    utils.add_plugin_results('Battery', data)
 
 
 def raw_battery_dict():
