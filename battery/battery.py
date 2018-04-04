@@ -8,8 +8,12 @@ class Battery(sal.plugin.DetailPlugin):
 
     def get_context(self, machine, **kwargs):
         context = self.super_get_context(machine, **kwargs)
-        machine_type = machine.conditions.filter(
-            condition_name="machine_type").first().condition_data
+        try:
+            machine_type = machine.conditions.filter(
+                condition_name="machine_type").first().condition_data
+        except AttributeError:
+            # If there are no results, None has no `condition_data` attr
+            machine_type = None
         if machine_type == "laptop":
             keys = (
                 "MaxCapacity", "DesignCapacity", "CycleCount",
@@ -34,8 +38,10 @@ class Battery(sal.plugin.DetailPlugin):
                 battery["life"] = (
                     float(battery["MaxCapacity"]) /
                     float(battery["DesignCapacity"])) * 100
-        else:
+        elif machine_type == 'desktop':
             battery = {"machine_type": "desktop"}
+        else:
+            battery = {"machine_type": "unknown"}
 
         context["data"] = battery
         return context
