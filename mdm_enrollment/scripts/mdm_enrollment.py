@@ -11,14 +11,14 @@ import utils
 
 
 def main():
-    dep_enrolled = False
+    dep_assigned = False
     mdm_enrolled = False
     user_approved = False
 
     cmd = ['profiles', '-e']
     output = subprocess.check_output(cmd)
     if len(output[output.find('{') + 1: output.find('}')].strip()) > 0:
-        dep_enrolled = True
+        dep_assigned = True
 
     if os_version() <= LooseVersion('10.13.0'):
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -42,8 +42,8 @@ def main():
 
         user_approved = True if "User Approved" in output else False
 
-    result = 'DEP Enrolled: {}, MDM Enrolled: {}, User Approved: {}'.format(
-        dep_enrolled, mdm_enrolled, user_approved)
+    result = 'DEP Assigned: {}, MDM Enrolled: {}, User Approved: {}'.format(
+        dep_assigned, mdm_enrolled, user_approved)
 
 
     utils.add_plugin_results('status', result)
