@@ -1,6 +1,5 @@
 #!/usr/bin/python
 
-
 import subprocess
 import sys
 import tempfile
@@ -12,6 +11,7 @@ import utils
 
 def main():
     dep_assigned = False
+    dep_enrolled = ''
     mdm_enrolled = False
     user_approved = False
 
@@ -37,14 +37,19 @@ def main():
     else:
         cmd = ['profiles', 'status', '-type', 'enrollment']
         output = subprocess.check_output(cmd)
-        if "An enrollment profile is currently installed on this system" in output:
+        if ("An enrollment profile is currently installed on this system" or
+                "MDM enrollment: Yes") in output:
             mdm_enrolled = True
+        if "Enrolled via DEP: Yes" in output:
+            dep_enrolled = True
+        elif "Enrolled via DEP: No" in output:
+            dep_enrolled = False
 
         user_approved = True if "User Approved" in output else False
 
-    result = 'DEP Assigned: {}, MDM Enrolled: {}, User Approved: {}'.format(
-        dep_assigned, mdm_enrolled, user_approved)
-
+    result = ('DEP Assigned: {}, DEP Enrolled: {}, MDM Enrolled: {}, '
+              'User Approved: {}'.format(
+               dep_assigned, dep_enrolled, mdm_enrolled, user_approved))
 
     utils.add_plugin_results('status', result)
 
