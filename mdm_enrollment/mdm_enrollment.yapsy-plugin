@@ -1,0 +1,8 @@
+[Core]
+Name = MDMEnrollment
+Module = mdm_enrollment
+
+[Documentation]
+Author = Shea Craig
+Version = 1.0
+Website = https://www.sheagcraig.com
