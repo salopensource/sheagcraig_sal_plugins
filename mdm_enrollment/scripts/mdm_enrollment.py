@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 
+import plistlib
 import subprocess
 import sys
 import tempfile
@@ -21,10 +22,9 @@ def main():
         dep_assigned = True
 
     if os_version() <= LooseVersion('10.13.0'):
-        with tempfile.TemporaryDirectory() as temp_dir:
-            tempfile = os.path.join(temp_dir, 'profiles_output.plist')
-            cmd = ['profiles', '-C', '-o', tempfile]
-            plist = plistlib.readPlist(tempfile)
+        cmd = ['profiles', '-C', '-o', 'stdout-xml']
+        plist_text = subprocess.check_output(cmd)
+        plist = plistlib.readPlistFromString(plist_text)
 
         for profile in plist['_computerlevel']:
             for item in profile['ProfileItems']:
