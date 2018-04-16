@@ -14,7 +14,7 @@ class SEPVersion(sal.plugin.Widget):
         context['data'] = (
             InventoryItem.objects
             .filter(machine__in=queryset, application__name="Symantec Endpoint Protection")
-            .values( "version")
+            .values("version")
             .annotate(count=Count("version"))
             .order_by("version"))
         return context
