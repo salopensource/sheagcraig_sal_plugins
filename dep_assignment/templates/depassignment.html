@@ -1,0 +1,31 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    {{ plugin }}
+  </div>
+  <div class="panel-body">
+    <div id="dep_assignment" style="max-height: 250px;"></div>
+  </div>
+</div>
+
+{% block script %}
+<script type="text/javascript">
+$(function() {
+    Morris.Donut({
+        element: 'dep_assignment',
+        data: [
+            {% for item in data %}
+            {
+                label: "{{ item.dep_status }}",
+                value: {{ item.count }}
+            },
+            {% endfor %}
+        ],
+        resize: true
+    }).on('click', function(i, row){
+        console.log(row['label']);
+        var url_mask = "{% url 'machine_list' plugin 'abc123' group_type group_id %}".replace(/abc123/, row['label'].toString());
+        window.location=url_mask;
+    });
+});
+</script>
+{% endblock %}
