@@ -1,7 +1,6 @@
 from django.db.models import Count, F, Q
 
 import sal.plugin
-import server.utils as utils
 
 
 PLUGIN_Q = Q(pluginscriptsubmission__plugin='mdm_enrollment',
