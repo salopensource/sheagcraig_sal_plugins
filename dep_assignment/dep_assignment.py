@@ -1,3 +1,5 @@
+from itertools import chain
+
 from django.db.models import Count, F, Q
 
 import sal.plugin
@@ -13,7 +15,7 @@ class DEPAssignment(sal.plugin.Widget):
 
     def get_context(self, queryset, **kwargs):
         context = self.super_get_context(queryset, **kwargs)
-        context['data'] = (
+        data = (
             queryset
             .filter(PLUGIN_Q)
             .annotate(
@@ -21,6 +23,8 @@ class DEPAssignment(sal.plugin.Widget):
             .values('dep_status')
             .annotate(count=Count('dep_status'))
             .order_by('dep_status'))
+        unknown = queryset.exclude(PLUGIN_Q).count()
+        context['data'] = chain(data, [{'dep_status': 'Unknown', 'count': unknown}])
         return context
 
     def filter(self, machines, data):
