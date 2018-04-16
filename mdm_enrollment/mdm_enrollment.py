@@ -1,23 +1,26 @@
-from django.db.models import Count
+from django.db.models import Count, F, Q
 
 import sal.plugin
 import server.utils as utils
-from inventory.models import InventoryItem
 
+
+PLUGIN_Q = Q(pluginscriptsubmission__plugin='mdm_enrollment',
+             pluginscriptsubmission__pluginscriptrow__pluginscript_name='mdm_status')
 
 class MDMEnrollment(sal.plugin.Widget):
 
-    description = "Machines enrolled in an MDM, whether via DEP, user-approved, or not."
+    description = "Machines enrolled in an MDM, user-approved, or not."
 
     def get_context(self, queryset, **kwargs):
         context = self.super_get_context(queryset, **kwargs)
         context['data'] = (
-            PluginScriptRow.objects
-            .filter(submission__machine=machine,
-                    submission__plugin=self.name,
-                    pluginscript_name="status")
-            .annotate(count=Count("status"))
-            .order_by("status"))
+            queryset
+            .filter(PLUGIN_Q)
+            .annotate(
+                mdm_status=F('pluginscriptsubmission__pluginscriptrow__pluginscript_data'))
+            .values('mdm_status')
+            .annotate(count=Count('mdm_status'))
+            .order_by('mdm_status'))
         return context
 
     def filter(self, machines, data):

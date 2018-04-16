@@ -12,14 +12,8 @@ import utils
 
 
 def main():
-    dep_assigned = False
     mdm_enrolled = False
     user_approved = False
-
-    cmd = ['profiles', '-e']
-    output = subprocess.check_output(cmd)
-    if len(output[output.find('{') + 1: output.find('}')].strip()) > 0:
-        dep_assigned = True
 
     if os_version() <= LooseVersion('10.13.0'):
         cmd = ['profiles', '-C', '-o', 'stdout-xml']
@@ -37,16 +31,18 @@ def main():
     else:
         cmd = ['profiles', 'status', '-type', 'enrollment']
         output = subprocess.check_output(cmd)
-        if "An enrollment profile is currently installed on this system" in output:
+        if "MDM enrollment: Yes" in output:
             mdm_enrolled = True
 
         user_approved = True if "User Approved" in output else False
 
-    result = 'DEP Assigned: {}, MDM Enrolled: {}, User Approved: {}'.format(
-        dep_assigned, mdm_enrolled, user_approved)
+    if mdm_enrolled == True:
+        status = "UAMDM" if user_approved else "MDM"
+    else:
+        status = "No"
 
-
-    utils.add_plugin_results('status', result)
+    result = {'mdm_status': status}
+    utils.add_plugin_results('mdm_enrollment', result)
 
 
 def os_version():

@@ -15,7 +15,7 @@ $(function() {
         data: [
             {% for item in data %}
             {
-                label: "{{ item.version }}",
+                label: "{{ item.mdm_status }}",
                 value: {{ item.count }}
             },
             {% endfor %}
