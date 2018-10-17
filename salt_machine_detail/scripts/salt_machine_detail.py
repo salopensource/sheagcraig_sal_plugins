@@ -19,7 +19,10 @@ def main():
             # the good stuff.
             events = json.loads(raw_log.readlines()[-1])
 
-    result = {i['__id__']: i['result'] for i in events['return'].values()}
+    try:
+        result = {i['__id__']: i['result'] for i in events['return'].values()}
+    except:
+        result = {}
 
     utils.add_plugin_results('SaltMachineDetail', result)
 
