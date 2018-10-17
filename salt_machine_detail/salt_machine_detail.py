@@ -10,6 +10,6 @@ class SaltMachineDetail(sal.plugin.DetailPlugin):
         context = self.super_get_context(machine, **kwargs)
         status = (
             PluginScriptRow.objects
-	    .filter(submission__machine=machine, submission__plugin='SaltMachineDetail'))
+            .filter(submission__machine=machine, submission__plugin=self.name))
         context['data'] = {s.pluginscript_name: str(s.pluginscript_data) for s in status}
         return context
