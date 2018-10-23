@@ -11,7 +11,7 @@ PLUGIN_Q = Q(pluginscriptsubmission__plugin='mdm_enrollment',
 
 class MDMEnrollment(sal.plugin.Widget):
 
-    description = "Machines enrolled in an MDM, user-approved, or not."
+    description = "Machines enrolled in an MDM manually, through DEP, or not at all."
 
     def get_context(self, queryset, **kwargs):
         context = self.super_get_context(queryset, **kwargs)
