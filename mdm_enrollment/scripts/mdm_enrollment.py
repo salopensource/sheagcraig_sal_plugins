@@ -11,27 +11,24 @@ sys.path.append("/usr/local/sal")
 import utils
 
 
+MANUAL_PROFILE_DISPLAY_NAME = 'Root MDM Profile'
+
+
 def main():
-    mdm_enrolled = False
-    user_approved = False
+    result = {}
 
-    status = read_enrollment()
-    # if os_version() <= LooseVersion('10.13.0'):
-    #     read_enrollment()
-    # else:
-    #     cmd = ['profiles', 'status', '-type', 'enrollment']
-    #     output = subprocess.check_output(cmd)
-    #     if "MDM enrollment: Yes" in output:
-    #         mdm_enrolled = True
+    # 10.13.4 is when the profiles command gained the ability to
+    # report on UAMDM status.
+    if os_version() < LooseVersion('10.13.4'):
+        result['mdm_status'] = get_enrollment_from_mdm_profile()
 
-    #     user_approved = True if "User Approved" in output else False
+    else:
+        status = profiles_status()
+        if status.get('Enrolled via DEP') == 'Yes':
+            result['mdm_status'] = 'DEP'
+        else:
+            result['mdm_status'] = 'Manually Enrolled' if 'Yes' in status.get('MDM enrollment', '') else 'No'
 
-    # if mdm_enrolled == True:
-    #     status = "UAMDM" if user_approved else "MDM"
-    # else:
-    #     status = "No"
-
-    result = {'mdm_status': status}
     utils.add_plugin_results('mdm_enrollment', result)
 
 
@@ -41,9 +38,23 @@ def os_version():
     return LooseVersion(output)
 
 
-def read_enrollment():
+def profiles_status():
+    cmd = ['profiles', 'status', '-type', 'enrollment']
+    try:
+        result = subprocess.check_output(cmd)
+    except subprocess.CalledProcessError:
+        result = ''
+
+    parsed = {}
+    for line in result.splitlines():
+        key, val = line.split(':')
+        parsed[key.strip()] = val.strip()
+
+    return parsed
+
+
+def get_enrollment_from_mdm_profile():
     mdm_enrolled = False
-    user_approved = False
     cmd = ['profiles', '-C', '-o', 'stdout-xml']
     plist_text = subprocess.check_output(cmd)
     plist = plistlib.readPlistFromString(plist_text)
@@ -53,7 +64,7 @@ def read_enrollment():
             if item['PayloadType'] == 'com.apple.mdm':
                 mdm_enrolled = True
                 # You should change this to your MDM provider's Manual enrollment name!
-                dep = False if profile['ProfileDisplayName'] == 'Root MDM Profile' else True
+                dep = False if profile['ProfileDisplayName'] == MANUAL_PROFILE_DISPLAY_NAME else True
                 break
             if mdm_enrolled:
                 break

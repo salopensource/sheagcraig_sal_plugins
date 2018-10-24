@@ -46,6 +46,7 @@ def os_version():
     output = subprocess.check_output(cmd)
     return LooseVersion(output)
 
+
 def profiles_status():
     cmd = ['profiles', 'status', '-type', 'enrollment']
     try:
