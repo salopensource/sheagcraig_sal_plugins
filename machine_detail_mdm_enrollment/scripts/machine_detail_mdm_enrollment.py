@@ -38,7 +38,7 @@ def main():
     # An enrollment profile is currently installed on this system
     # There is no enrollment profile installed on this system
 
-    utils.add_plugin_results('mdm_enrollment', result)
+    utils.add_plugin_results('machine_detail_mdm_enrollment', result)
 
 
 def os_version():
