@@ -12,6 +12,7 @@ import utils
 
 
 MANUAL_PROFILE_DISPLAY_NAME = 'Root MDM Profile'
+DEP_PROFILE_DISPLAY_NAME = 'MobileIron Cloud DEP MDM Profile'
 
 
 def main():
@@ -74,15 +75,22 @@ def get_enrollment_from_mdm_profile():
             if item['PayloadType'] == 'com.apple.mdm':
                 mdm_enrolled = True
                 # You should change this to your MDM provider's Manual enrollment name!
-                dep = False if profile['ProfileDisplayName'] == MANUAL_PROFILE_DISPLAY_NAME else True
+                if profile['ProfileDisplayName'] == MANUAL_PROFILE_DISPLAY_NAME
+                    dep = False
+                elif profile['ProfileDisplayName'] == DEP_PROFILE_DISPLAY_NAME
+                    dep = True
+                else:
+                    dep = 'Unknown'
                 break
             if mdm_enrolled:
                 break
 
-    if mdm_enrolled and dep:
+    if mdm_enrolled and dep is True:
         status = 'DEP'
-    elif mdm_enrolled:
+    elif mdm_enrolled and dep is False:
         status = 'Manually Enrolled'
+    elif mdm_enrolled and dep == 'Unknown':
+        status = 'Enrolled with unknown server'
     else:
         status = 'No'
 
