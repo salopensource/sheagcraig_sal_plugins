@@ -75,9 +75,9 @@ def get_enrollment_from_mdm_profile():
             if item['PayloadType'] == 'com.apple.mdm':
                 mdm_enrolled = True
                 # You should change this to your MDM provider's Manual enrollment name!
-                if profile['ProfileDisplayName'] == MANUAL_PROFILE_DISPLAY_NAME
+                if profile['ProfileDisplayName'] == MANUAL_PROFILE_DISPLAY_NAME:
                     dep = False
-                elif profile['ProfileDisplayName'] == DEP_PROFILE_DISPLAY_NAME
+                elif profile['ProfileDisplayName'] == DEP_PROFILE_DISPLAY_NAME:
                     dep = True
                 else:
                     dep = 'Unknown'
