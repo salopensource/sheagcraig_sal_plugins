@@ -28,5 +28,7 @@ class DEPAssignment(sal.plugin.Widget):
         return context
 
     def filter(self, machines, data):
+        if data == 'Unknown':
+            return machines.exclude(PLUGIN_Q), data
         return machines.filter(
             PLUGIN_Q, pluginscriptsubmission__pluginscriptrow__pluginscript_data=data), data
