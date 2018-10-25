@@ -69,7 +69,7 @@ def get_enrollment_from_mdm_profile():
     plist_text = subprocess.check_output(cmd)
     plist = plistlib.readPlistFromString(plist_text)
 
-    for profile in plist['_computerlevel']:
+    for profile in plist.get('_computerlevel', []):
         for item in profile['ProfileItems']:
             if item['PayloadType'] == 'com.apple.mdm':
                 mdm_enrolled = True
