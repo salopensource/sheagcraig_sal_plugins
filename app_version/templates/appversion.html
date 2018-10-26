@@ -1,0 +1,35 @@
+{% for app in apps %}
+<div class="panel panel-default">
+  <div class="panel-heading">
+    {{ app.name }}
+  </div>
+  <div class="panel-body">
+    <div id="{{ app.name }}" style="max-height: 250px;"></div>
+  </div>
+</div>
+{% endfor %}
+
+{% block script %}
+{% for app in apps %}
+<script type="text/javascript">
+$(function() {
+    Morris.Donut({
+      element: '{{ app.name }}',
+        data: [
+            {% for item in app.data %}
+            {
+                label: "{{ item.version }}",
+                value: {{ item.count }}
+            },
+            {% endfor %}
+        ],
+        resize: true
+    }).on('click', function(i, row){
+        console.log(row['label']);
+        var url_mask = "{% url 'machine_list' plugin 'abc123' group_type group_id %}".replace(/abc123/, row['label'].toString());
+        window.location=url_mask;
+    });
+});
+</script>
+{% endfor %}
+{% endblock %}
