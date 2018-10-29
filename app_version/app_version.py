@@ -46,9 +46,12 @@ class AppVersion(sal.plugin.Widget):
         return context
 
     def filter(self, machines, data):
-        # TODO: Not implemented yet.
+        try:
+            app, version = data.split('+')
+        except ValueError:
+            app, version = ('', '')
         machines = machines.filter(
-            inventoryitem__application__name="dwarf_fortress",
-            inventoryitem__version=data)
+            inventoryitem__application__name=app,
+            inventoryitem__version=version)
 
-        return machines, "Machines with version {} of dwarf_fortress".format(data)
+        return machines, "Machines with version {} of {}".format(version, app)
