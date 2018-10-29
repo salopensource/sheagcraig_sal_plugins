@@ -2,24 +2,38 @@ from django.db.models import Count
 
 import sal.plugin
 import server.models
-import server.utils as utils
 from inventory.models import InventoryItem
 
 
 class AppVersion(sal.plugin.Widget):
 
     description = "App deployment dashboard plugin"
+    supported_os_families = [sal.plugin.OSFamilies.darwin]
+
+    def get_widget_width(self, *args, **kwargs):
+        """Dynamically size plugin row width (in third-columns)
+
+        Width is determined by the number of apps being tracked.
+        """
+        try:
+            apps = server.models.SalSetting.objects.get(name='AppVersion_Apps').value.split(',')
+        except server.models.SaltSetting.DoesNotExist:
+            apps = 1
+        rows, columns = divmod(len(apps) * 4, 12)
+        return 12 if rows >= 1 else columns
 
     def get_context(self, queryset, **kwargs):
         context = self.super_get_context(queryset, **kwargs)
         try:
-            apps = server.models.SalSetting.objects.get('AppVersion_Apps')
+            apps = server.models.SalSetting.objects.get(name='AppVersion_Apps').value.split(',')
+            apps = [n.strip() for n in apps]
         except server.models.SalSetting.DoesNotExist:
-            apps = 'dwarf_fortress'
-
-        apps = apps.split(',')
+            apps = ['dwarf_fortress']
 
         app_data = []
+        rows, _ = divmod(len(apps) * 4, 12)
+        context['width'] = 4 if rows >= 1 else 12 / len(apps)
+
         for app in apps:
             app_results = (
                 InventoryItem.objects
@@ -32,8 +46,9 @@ class AppVersion(sal.plugin.Widget):
         return context
 
     def filter(self, machines, data):
+        # TODO: Not implemented yet.
         machines = machines.filter(
-            inventoryitem__application__name="Symantec Endpoint Protection",
+            inventoryitem__application__name="dwarf_fortress",
             inventoryitem__version=data)
 
-        return machines, "Machines with version {} of Symantec Endpoint Protection".format(data)
+        return machines, "Machines with version {} of dwarf_fortress".format(data)

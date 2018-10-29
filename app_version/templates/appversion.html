@@ -1,18 +1,20 @@
-{% for app in apps %}
-<div class="panel panel-default">
-  <div class="panel-heading">
-    {{ app.name }}
+<div class="row">
+  {% for app in apps %}
+  <div class="col-sm-{{ width }}">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        {{ app.name }}
+      </div>
+      <div id="{{ app.name }}" style="max-height: 250px;"></div>
+    </div>
   </div>
-  <div class="panel-body">
-    <div id="{{ app.name }}" style="max-height: 250px;"></div>
-  </div>
+  {% endfor %}
 </div>
-{% endfor %}
 
-{% block script %}
 {% for app in apps %}
 <script type="text/javascript">
-$(function() {
+$(function() 
+{
     Morris.Donut({
       element: '{{ app.name }}',
         data: [
@@ -32,4 +34,3 @@ $(function() {
 });
 </script>
 {% endfor %}
-{% endblock %}
