@@ -8,7 +8,7 @@ class MachineDetailMDMEnrollment(sal.plugin.DetailPlugin):
 
     def get_context(self, machine, **kwargs):
         context = self.super_get_context(machine, **kwargs)
-	rows = (PluginScriptRow.objects
+        rows = (PluginScriptRow.objects
             .filter(
                 submission__machine=machine,
                 submission__plugin='machine_detail_mdm_enrollment')
