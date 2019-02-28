@@ -9,10 +9,10 @@ class Battery(sal.plugin.DetailPlugin):
     def get_context(self, machine, **kwargs):
         context = self.super_get_context(machine, **kwargs)
         try:
-            machine_type = machine.conditions.filter(
-                condition_name="machine_type").first().condition_data
+            machine_type = machine.facts.filter(
+                fact_name="machine_type").first().fact_data
         except AttributeError:
-            # If there are no results, None has no `condition_data` attr
+            # If there are no results, None has no `fact_data` attr
             machine_type = None
         if machine_type == "laptop":
             keys = (
