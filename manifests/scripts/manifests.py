@@ -18,9 +18,11 @@ def main():
     else:
         client_manifest = {}
 
-    utils.add_plugin_results(
-        'Manifests',
-        {"included_manifests": "+".join(client_manifest.get("included_manifests", []))})
+    # Drop any blank entries and trim WS.
+    manifests = [m.strip() for m in client_manifest.get("included_manifests", []) if m]
+    if not manifests:
+        manifests = ["NO INCLUDED MANIFESTS"]
+    utils.add_plugin_results('Manifests', {"included_manifests": "+".join(manifests)})
 
 
 if __name__ == "__main__":

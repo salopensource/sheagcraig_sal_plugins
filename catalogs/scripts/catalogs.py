@@ -18,8 +18,11 @@ def main():
     else:
         client_manifest = {}
 
-    utils.add_plugin_results(
-        'Catalogs', {"Catalogs": "+".join(client_manifest.get("catalogs", []))})
+    # Drop any blank entries and trim WS.
+    catalogs = [c.strip() for c in client_manifest.get("catalogs", []) if c]
+    if not catalogs:
+        catalogs = ["NO CATALOGS"]
+    utils.add_plugin_results('Catalogs', {"Catalogs": "+".join(catalogs)})
 
 
 if __name__ == "__main__":
