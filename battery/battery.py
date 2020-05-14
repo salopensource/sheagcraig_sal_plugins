@@ -1,16 +1,18 @@
 import sal.plugin
-from server.models import PluginScriptRow
+from server.models import (PluginScriptRow, Fact)
 
 
 class Battery(sal.plugin.DetailPlugin):
 
     description = "Battery Information"
 
+    supported_os_families = [sal.plugin.OSFamilies.darwin]
+
     def get_context(self, machine, **kwargs):
         context = self.super_get_context(machine, **kwargs)
         try:
-            machine_type = machine.conditions.filter(
-                condition_name="machine_type").first().condition_data
+            machine_type = machine.facts.filter(
+                fact_name="machine_type").first().fact_data
         except AttributeError:
             # If there are no results, None has no `condition_data` attr
             machine_type = None
