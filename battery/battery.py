@@ -1,11 +1,10 @@
 import sal.plugin
-from server.models import (PluginScriptRow, Fact)
+from server.models import PluginScriptRow
 
 
 class Battery(sal.plugin.DetailPlugin):
 
     description = "Battery Information"
-
     supported_os_families = [sal.plugin.OSFamilies.darwin]
 
     def get_context(self, machine, **kwargs):
