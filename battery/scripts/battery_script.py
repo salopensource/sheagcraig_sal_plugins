@@ -1,59 +1,42 @@
-#!/usr/bin/python
-# Battery code from @pudquick / Michael Lynn
-# https://gist.github.com/pudquick/134acb5f7423312effcc98ec56679136
+#!/usr/local/sal/Python.framework/Versions/3.8/bin/python3
+"""Shamelessly taken from https://github.com/chilcote/unearth
+with minor changes to use "plistlib.loads" by Nathan Darnell"""
 
 
-import sys
+import plistlib
+import subprocess
 
-import objc
-from Foundation import NSBundle
-IOKit = NSBundle.bundleWithIdentifier_('com.apple.framework.IOKit')
-functions = [("IOServiceGetMatchingService", b"II@"),
-             ("IOServiceMatching", b"@*"),
-             ("IORegistryEntryCreateCFProperties", b"IIo^@@I"),
-             ("IOPSCopyPowerSourcesByType", b"@I"),
-             ("IOPSCopyPowerSourcesInfo", b"@"),
-            ]
-objc.loadBundleFunctions(IOKit, globals(), functions)
-
-sys.path.append("/usr/local/sal")
-import utils
+import sal
 
 
 def main():
-    data = raw_battery_dict()
-    # If this is not a laptop, data will just be empty. No need to do
-    # more work.
-    if data:
-        adjusted_dict = adjusted_battery_dict()
-        if adjusted_dict and "BatteryHealth" in adjusted_dict:
-            data["BatteryHealth"] = adjusted_dict["BatteryHealth"]
-        else:
-            data["BatteryHealth"] = "Unkonwn"
-
-    utils.add_plugin_results('Battery', data)
+    data = battery_facts()
+    sal.add_plugin_results('Battery', data)
 
 
-def raw_battery_dict():
-    # matches information pulled by: pmset -g rawbatt
-    battery = IOServiceGetMatchingService(
-        0, IOServiceMatching("AppleSmartBattery"))
-    if battery != 0:
-        err, props = IORegistryEntryCreateCFProperties(
-            battery, None, None, 0)
-    else:
-        props = {}
-    return props
+def battery_facts():
+    """Returns the battery health"""
 
+    result = {}
 
-def adjusted_battery_dict():
-	# matches information pulled by: pmset -g batt
     try:
-        battery = list(IOPSCopyPowerSourcesByType(0))[0]
-    except:
-        battery = 0
-    if (battery != 0):
-        return battery
+        proc = subprocess.Popen(
+            ["/usr/sbin/ioreg", "-r", "-c", "AppleSmartBattery", "-a"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        stdout, _ = proc.communicate()
+        if stdout:
+            d = plistlib.loads(stdout)[0]
+            result['BatteryHealth'] = "Healthy" if not d["PermanentFailureStatus"] else "Failing"
+            result['MaxCapacity'] = d["MaxCapacity"]
+            result['DesignCapacity'] = d["DesignCapacity"]
+            result['CycleCount'] = d["CycleCount"]
+            result['DesignCycleCount9C'] = d["DesignCycleCount9C"]
+    except (IOError, OSError):
+        pass
+
+    return result
 
 
 if __name__ == "__main__":
