@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/local/sal/Python.framework/Versions/3.8/bin/python3
 
 
 import plistlib
@@ -7,9 +7,7 @@ import sys
 import tempfile
 from distutils.version import LooseVersion
 
-sys.path.append("/usr/local/sal")
-import utils
-
+import sal
 
 MANUAL_PROFILE_DISPLAY_NAME = 'Root MDM Profile'
 DEP_PROFILE_DISPLAY_NAME = 'MobileIron Cloud DEP MDM Profile'
@@ -39,20 +37,20 @@ def main():
     # An enrollment profile is currently installed on this system
     # There is no enrollment profile installed on this system
 
-    utils.add_plugin_results('machine_detail_mdm_enrollment', result)
+    sal.add_plugin_results('machine_detail_mdm_enrollment', result)
 
 
 def os_version():
     cmd = ['sw_vers', '-productVersion']
-    output = subprocess.check_output(cmd)
+    output = subprocess.check_output(cmd, Text=true)
     return LooseVersion(output)
 
 
 def profiles_status():
     cmd = ['profiles', 'status', '-type', 'enrollment']
     try:
-        result = subprocess.check_output(cmd)
-    except subprocess.CalledProcessError:
+        result = subprocess.check_output(cmd, text=True)
+    except subprocess.CalledProcessError as error:
         result = ''
 
     parsed = {}
@@ -67,7 +65,7 @@ def get_enrollment_from_mdm_profile():
     mdm_enrolled = False
     user_approved = False
     cmd = ['profiles', '-C', '-o', 'stdout-xml']
-    plist_text = subprocess.check_output(cmd)
+    plist_text = subprocess.check_output(cmd, text=True)
     plist = plistlib.readPlistFromString(plist_text)
 
     for profile in plist.get('_computerlevel', []):
@@ -101,10 +99,10 @@ def get_dep_activation():
     result = 'Not activated'
 
     cmd = ['profiles', '-e']
-    output = subprocess.check_output(cmd)
+    output = subprocess.check_output(cmd, text=True)
     for line in output.splitlines():
         if 'ConfigurationURL' in line:
-            result = line.split('=')[1].replace('"', '').replace(';', '').strip()
+            result = line.split('=',1)[1].replace('"', '').replace(';', '').strip()
             break
 
     return result
