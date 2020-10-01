@@ -17,7 +17,7 @@ class AppVersion(sal.plugin.Widget):
         """
         try:
             apps = server.models.SalSetting.objects.get(name='AppVersion_Apps').value.split(',')
-        except server.models.SaltSetting.DoesNotExist:
+        except server.models.SalSetting.DoesNotExist:
             apps = 1
         rows, columns = divmod(len(apps) * 4, 12)
         return 12 if rows >= 1 else columns
