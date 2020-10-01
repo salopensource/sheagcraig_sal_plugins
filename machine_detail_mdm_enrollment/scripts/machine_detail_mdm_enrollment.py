@@ -42,7 +42,7 @@ def main():
 
 def os_version():
     cmd = ['sw_vers', '-productVersion']
-    output = subprocess.check_output(cmd, Text=true)
+    output = subprocess.check_output(cmd, text=True)
     return LooseVersion(output)
 
 
