@@ -1,12 +1,9 @@
-#!/usr/bin/python
-
+#!/usr/local/sal/Python.framework/Versions/Current/bin/python3
 
 import json
 import os
-import sys
 
-sys.path.append("/usr/local/sal")
-import utils
+import sal 
 
 
 salt_highstate_log = '/var/log/salt/events'
@@ -24,7 +21,7 @@ def main():
     except:
         result = {}
 
-    utils.add_plugin_results('SaltMachineDetail', result)
+    sal.utils.add_plugin_results('SaltMachineDetail', result)
 
 
 if __name__ == "__main__":
