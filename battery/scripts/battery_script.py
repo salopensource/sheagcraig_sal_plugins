@@ -1,4 +1,4 @@
-#!/usr/local/sal/Python.framework/Versions/3.8/bin/python3
+#!/usr/local/sal/Python.framework/Versions/Current/bin/python3
 """Shamelessly taken from https://github.com/chilcote/unearth
 with minor changes to use "plistlib.loads" by Nathan Darnell"""
 
@@ -11,7 +11,7 @@ import sal
 
 def main():
     data = battery_facts()
-    sal.add_plugin_results('Battery', data)
+    sal.add_plugin_results("Battery", data)
 
 
 def battery_facts():
@@ -28,11 +28,13 @@ def battery_facts():
         stdout, _ = proc.communicate()
         if stdout:
             d = plistlib.loads(stdout)[0]
-            result['BatteryHealth'] = "Healthy" if not d["PermanentFailureStatus"] else "Failing"
-            result['MaxCapacity'] = d["MaxCapacity"]
-            result['DesignCapacity'] = d["DesignCapacity"]
-            result['CycleCount'] = d["CycleCount"]
-            result['DesignCycleCount9C'] = d["DesignCycleCount9C"]
+            result["BatteryHealth"] = (
+                "Healthy" if not d["PermanentFailureStatus"] else "Failing"
+            )
+            result["MaxCapacity"] = d["MaxCapacity"]
+            result["DesignCapacity"] = d["DesignCapacity"]
+            result["CycleCount"] = d["CycleCount"]
+            result["DesignCycleCount9C"] = d["DesignCycleCount9C"]
     except (IOError, OSError):
         pass
 
