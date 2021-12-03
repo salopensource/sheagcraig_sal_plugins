@@ -61,7 +61,7 @@ def profiles_status():
 
     parsed = {}
     for line in result.splitlines():
-        key, val = line.split(":")
+        key, val = line.split(": ")
         parsed[key.strip()] = val.strip()
 
     return parsed
