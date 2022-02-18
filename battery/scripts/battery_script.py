@@ -3,6 +3,7 @@
 with minor changes to use "plistlib.loads" by Nathan Darnell"""
 
 
+import os
 import plistlib
 import subprocess
 
@@ -19,6 +20,18 @@ def battery_facts():
 
     result = {}
 
+    # Determine architecture from:
+    # https://github.com/munki/munki/blob/main/code/client/munkilib/info.py
+    arch = os.uname()[4]
+    if arch == "x86_64":
+        # we might be natively Intel64, or running under Rosetta.
+        # os.uname()[4] returns the current execution arch, which under Rosetta
+        # will be x86_64. Since what we want here is the _native_ arch, we're
+        # going to use a hack for now to see if we're natively arm64
+        uname_version = os.uname()[3]
+        if "ARM64" in uname_version:
+            arch = "arm64"
+
     try:
         proc = subprocess.Popen(
             ["/usr/sbin/ioreg", "-r", "-c", "AppleSmartBattery", "-a"],
@@ -31,7 +44,10 @@ def battery_facts():
             result["BatteryHealth"] = (
                 "Healthy" if not d["PermanentFailureStatus"] else "Failing"
             )
-            result["MaxCapacity"] = d["MaxCapacity"]
+            if arch == "x86_64":
+                result["MaxCapacity"] = d["MaxCapacity"]
+            else:
+                result["MaxCapacity"] = d["AppleRawMaxCapacity"]
             result["DesignCapacity"] = d["DesignCapacity"]
             result["CycleCount"] = d["CycleCount"]
             result["DesignCycleCount9C"] = d["DesignCycleCount9C"]
